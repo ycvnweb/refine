@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdocumentation=self.webpackChunkdocumentation||[]).push([[77113],{30579:e=>{e.exports=JSON.parse('{"permalink":"/blog/tags/mui","page":1,"postsPerPage":3,"totalPages":1,"totalCount":3,"blogDescription":"A Docusaurus powered blog!","blogTitle":"refine blog!"}')}}]);
