@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdocumentation=self.webpackChunkdocumentation||[]).push([[44428],{63899:a=>{a.exports=JSON.parse('{"label":"react-aria","permalink":"/blog/tags/react-aria","allTagsPath":"/blog/tags","count":1}')}}]);
