@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkdocumentation=self.webpackChunkdocumentation||[]).push([[62610],{89565:a=>{a.exports=JSON.parse('{"label":"wai-aria","permalink":"/blog/tags/wai-aria","allTagsPath":"/blog/tags","count":1}')}}]);
