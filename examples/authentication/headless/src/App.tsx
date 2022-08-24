@@ -1,5 +1,6 @@
 import { AuthPage, AuthProvider, Refine } from "@pankod/refine-core";
-import dataProvider from "@pankod/refine-simple-rest";
+import { dataProvider } from "@pankod/refine-supabase";
+
 import routerProvider from "@pankod/refine-react-router-v6";
 import "@pankod/refine-antd/dist/styles.min.css";
 
@@ -8,51 +9,86 @@ import { RegisterPage } from "./pages/auth";
 import { ForgotPasswordPage } from "./pages/auth/forgotPassword";
 import { ExamplePage } from "./pages/example";
 import { UpdatePasswordPage } from "./pages/auth/updatePassword";
+import { supabaseClient } from "././utility";
 
 const App: React.FC = () => {
     const authProvider: AuthProvider = {
-        login: (params: any) => {
-            if (params.providerName === "facebook") {
-                return Promise.resolve(
-                    "https://www.facebook.com/v2.12/dialog/oauth",
-                );
-            }
-            if (params.providerName === "google") {
-                return Promise.resolve(
-                    "https://accounts.google.com/o/oauth2/v2/auth",
-                );
-            }
-            if (params.email === "admin@refine.com") {
-                localStorage.setItem("email", params.username);
-                return Promise.resolve();
+        login: async ({ email, password, providerName }) => {
+            let params;
+            if (providerName) {
+                params = {
+                    provider: providerName,
+                };
+            } else {
+                params = {
+                    email,
+                    password,
+                };
             }
 
-            return Promise.reject();
-        },
-        register: (params: any) => {
-            if (params.username && params.password) {
-                localStorage.setItem("email", params.username);
+            const { user, error } = await supabaseClient.auth.signIn(params);
+
+            if (error) {
+                return Promise.reject(error);
+            }
+
+            if (user) {
                 return Promise.resolve();
             }
-            return Promise.reject();
         },
-        updatePassword: (params: any) => {
-            if (params.password && params.newPassword) {
-                //we can update password here
+        register: async ({ email, password }) => {
+            const { user, error } = await supabaseClient.auth.signUp({
+                email,
+                password,
+            });
+
+            if (error) {
+                return Promise.reject(error);
+            }
+
+            if (user) {
                 return Promise.resolve();
             }
-            return Promise.reject();
         },
-        resetPassword: (params: any) => {
-            if (params.email) {
-                //we can send email with reset password link here
+        updatePassword: async (params: any) => {
+            const { error, data } = await supabaseClient.auth.api.updateUser(
+                params.token,
+                {
+                    password: params.newPassword,
+                },
+            );
+
+            if (error) {
+                return Promise.reject(error);
+            }
+
+            if (data) {
                 return Promise.resolve();
             }
-            return Promise.reject();
         },
-        logout: () => {
-            localStorage.removeItem("email");
-            return Promise.resolve();
+        resetPassword: async ({ email }) => {
+            const { data, error } =
+                await supabaseClient.auth.api.resetPasswordForEmail(email, {
+                    redirectTo: "http://localhost:3000/auth/update-password",
+                });
+            if (error) {
+                return Promise.reject(error);
+            }
+
+            console.log(data);
+
+            if (data) {
+                return Promise.resolve();
+            }
+        },
+        logout: async () => {
+            const { error } = await supabaseClient.auth.signOut();
+
+            if (error) {
+                return Promise.reject(error);
+            }
+
+            return Promise.resolve("/");
         },
         checkError: () => Promise.resolve(),
         checkAuth: () =>
@@ -86,9 +122,25 @@ const App: React.FC = () => {
                     },
                 ],
             }}
-            dataProvider={dataProvider("https://api.fake-rest.refine.dev")}
+            dataProvider={dataProvider(supabaseClient)}
             authProvider={authProvider}
-            AuthPage={AuthPage}
+            AuthPage={(props) => (
+                <AuthPage
+                    {...props}
+                    registerLink="/auth/register"
+                    resetPasswordLink="/auth/forgot-password"
+                    updatePasswordLink="/auth/update-password"
+                    providers={[
+                        {
+                            name: "github",
+                            label: "Github",
+                            icon: (
+                                <img src="https://img.icons8.com/color/48/000000/github.png" />
+                            ),
+                        },
+                    ]}
+                />
+            )}
             resources={[
                 {
                     name: "posts",
