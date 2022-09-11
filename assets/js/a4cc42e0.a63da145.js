@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkdocumentation=self.webpackChunkdocumentation||[]).push([[61830],{49569:e=>{e.exports=JSON.parse('{"permalink":"/blog/tags/nextjs","page":1,"postsPerPage":4,"totalPages":1,"totalCount":4,"blogDescription":"A Docusaurus powered blog!","blogTitle":"refine blog!"}')}}]);
