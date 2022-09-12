@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkdocumentation=self.webpackChunkdocumentation||[]).push([[5860],{65607:e=>{e.exports=JSON.parse('{"permalink":"/blog/tags/tailwindcss","page":1,"postsPerPage":1,"totalPages":1,"totalCount":1,"blogDescription":"A Docusaurus powered blog!","blogTitle":"refine blog!"}')}}]);

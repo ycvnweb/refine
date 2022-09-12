@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdocumentation=self.webpackChunkdocumentation||[]).push([[45559],{14113:e=>{e.exports=JSON.parse('{"permalink":"/blog/tags/supabase","page":1,"postsPerPage":4,"totalPages":1,"totalCount":4,"blogDescription":"A Docusaurus powered blog!","blogTitle":"Blog"}')}}]);
