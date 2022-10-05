@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkdocumentation=self.webpackChunkdocumentation||[]).push([[48746],{48746:e=>{e.exports=JSON.parse('{"filePath":"/home/runner/work/refine/refine/packages/mantine/src/index.tsx","description":"","displayName":"useLocalStorage","props":{},"generatedAt":1664962282713}')}}]);
