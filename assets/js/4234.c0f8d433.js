@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdocumentation=self.webpackChunkdocumentation||[]).push([[4234],{4234:e=>{e.exports=JSON.parse('{"filePath":"/home/runner/work/refine/refine/packages/mantine/src/index.tsx","description":"","displayName":"useForm","props":{},"generatedAt":1666335854973}')}}]);
