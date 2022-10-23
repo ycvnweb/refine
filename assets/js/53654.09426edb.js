@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkdocumentation=self.webpackChunkdocumentation||[]).push([[53654],{53654:e=>{e.exports=JSON.parse('{"filePath":"/home/runner/work/refine/refine/packages/kbar/src/index.tsx","description":"","displayName":"createAction","props":{},"generatedAt":1666361690317}')}}]);
