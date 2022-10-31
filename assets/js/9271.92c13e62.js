@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkdocumentation=self.webpackChunkdocumentation||[]).push([[9271],{9271:e=>{e.exports=JSON.parse('{"filePath":"/home/runner/work/refine/refine/packages/mui/src/index.tsx","description":"","displayName":"getTableBodyUtilityClass","props":{},"generatedAt":1667220046782}')}}]);
