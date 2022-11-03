@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdocumentation=self.webpackChunkdocumentation||[]).push([[65717],{65717:e=>{e.exports=JSON.parse('{"filePath":"/home/runner/work/refine/refine/packages/ui-tests/src/index.tsx","description":"","displayName":"buttonImportTests","props":{},"generatedAt":1667489341083}')}}]);
