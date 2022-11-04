@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdocumentation=self.webpackChunkdocumentation||[]).push([[18596],{18596:e=>{e.exports=JSON.parse('{"filePath":"/home/runner/work/refine/refine/packages/mui/src/index.tsx","description":"Hook that instantiate a [[GridApiRef]].","displayName":"__type","props":{},"generatedAt":1667558342942}')}}]);
