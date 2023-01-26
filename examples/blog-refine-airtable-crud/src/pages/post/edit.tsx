@@ -34,51 +34,6 @@ export const PostEdit: React.FC = () => {
                         </p>
                     )}
                 </div>
-
-                <div className="mb-6">
-                    <label
-                        htmlFor="title"
-                        className="mb-2 block text-sm font-medium"
-                    >
-                        Title
-                    </label>
-                    <input
-                        {...register("title", { required: true })}
-                        type="text"
-                        id="title"
-                        className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm "
-                        placeholder="Title"
-                    />
-                    {errors.title && (
-                        <p className="mt-1 text-sm text-red-600">
-                            <span className="font-medium">Oops!</span> This
-                            field is required
-                        </p>
-                    )}
-                </div>
-
-                <div className="mb-6">
-                    <label
-                        htmlFor="content"
-                        className="mb-2 block text-sm font-medium"
-                    >
-                        Content
-                    </label>
-                    <textarea
-                        {...register("content", { required: true })}
-                        id="content"
-                        className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm "
-                        placeholder="Content"
-                        rows={10}
-                    />
-                    {errors.content && (
-                        <p className="mt-1 text-sm text-red-600">
-                            <span className="font-medium">Oops!</span> This
-                            field is required
-                        </p>
-                    )}
-                </div>
-
                 <div className="mb-6">
                     <label
                         htmlFor="category"
