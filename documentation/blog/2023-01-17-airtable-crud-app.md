@@ -15,6 +15,7 @@ Before the existence of refine, building CRUD applications and data-intensive ap
 refine’s service providers make sure that you can easily connect to any custom REST, GraphQL backend as well as most BAAS(Backend as a service) such as [Airtable](https://www.airtable.com/). In this article, we will be building a simple React CRUD application using refine and Airtable, a famous backend service to illustrate how you can power your applications with refine.
 
 Steps we'll cover:
+- [Introduction](#introduction)
 - [Why Use refine?](#why-use-refine)
 - [What is Airtable?](#what-is-airtable)
   - [Setup Airtable](#setup-airtable)
@@ -27,6 +28,8 @@ Steps we'll cover:
   - [Creating post record](#creating-post-record)
   - [Editing post record](#editing-post-record)
   - [Deleting post record](#deleting-post-record)
+- [Conclusion](#conclusion)
+- [Live CodeSandbox Example](#live-codesandbox-example)
 
 
 
@@ -167,7 +170,7 @@ After Running the command, the Refine application should be up and running. Visi
 
 * **The `<Refine/>` component**: This component is the entry point of a refine app. This is where we add the configurations the application needs.
 
-* **DataProvider**: A DataProvider in refine is represented as a [React context](https://reactjs.org/docs/context.html) provider in the refine core package which enables a refine app to interact with an API. It also enables the application to easily consume various APIs and data services. A data provider sends HTTP requests and receives responses via **predefined** **methods** shown below.
+* **dataProvider**: A dataProvider in refine is represented as a [React context](https://reactjs.org/docs/context.html) provider in the refine core package which enables a refine app to interact with an API. It also enables the application to easily consume various APIs and data services. A data provider sends HTTP requests and receives responses via **predefined** **methods** shown below.
 
 ```tsx
 import { Refine } from "@pankod/refine-core";
@@ -176,7 +179,6 @@ import dataProvider from "./dataProvider";
 const App: React.FC = () => {
     return <Refine dataProvider={dataProvider} />;
 };
-
 ```
 To get more information about the dataProvider, you can always view the documentation [here](https://refine.dev/docs/api-reference/core/providers/data-provider/). 
 
@@ -221,7 +223,7 @@ the `resources` property accepts an array of objects with each object specifying
 To get more information about how to use a resource, you can always view the documentation [here](https://refine.dev/docs/api-reference/core/components/refine-config/#resources).
 
 
-<br/><br/>
+<br/>
 
 After obtaining more insight on the constitutents of a refine application, we will take a look at the `App.tsx` file of our refine application.
 
@@ -260,7 +262,6 @@ We will implement the basic CRUD operations like create, list, delete and retrie
 We will add the /posts/ route to our refine application
 
 ```tsx title="src/App.tsx"
-
 import React from "react";
 import { Refine } from "@pankod/refine-core";
 import dataProvider from "@pankod/refine-airtable";
@@ -285,7 +286,6 @@ function App() {
 }
  
 export default App;
-
 ```
 
 Preview of the posts route in the refine application
@@ -319,15 +319,14 @@ Next, we will define an interface for the fetched data from our Airtable Base. t
 
 
 ```tsx title="src/interfaces/post.d.ts"
-
 export interface IPost {
- id: string;
- name: string;
- title: string;
- content: string,
- category: string,
- Status: "published" | "draft" | "rejected";
- createdAt: string;
+  id: string;
+  name: string;
+  title: string;
+  content: string,
+  category: string,
+  status: "published" | "draft" | "rejected";
+  createdAt: string;
 }
 ```
 
@@ -358,19 +357,9 @@ export const PostList: React.FC = () => {
        accessorKey: "id",
      },
      {
-       id: "Name",
+       id: "name",
        header: "Name",
        accessorKey: "Name",
-     },
-     {
-       id: "title",
-       header: "Title",
-       accessorKey: "title",
-     },
-     {
-       id: "content",
-       header: "Content",
-       accessorKey: "content",
      },
      {
        id: "category",
@@ -383,43 +372,27 @@ export const PostList: React.FC = () => {
        accessorKey: "Status",
      },
      {
-       id: "createdAt",
-       header: "CreatedAt",
-       accessorKey: "createdAt",
-     },
-     {
        id: "action",
        header: "Action",
        accessorKey: "id",
-       cell: function render({ getValue }) {
-         return (
-           <button
-             className="rounded border border-gray-200 p-2 text-xs font-medium leading-tight transition duration-150 ease-in-out hover:bg-indigo-500 hover:text-white"
-             onClick={() =>
-               show("posts", getValue() as number)
-             }
-           >
-             View
-           </button>
-         );
-       },
-     },
-     {
-       id: "action",
-       header: "Action",
-       accessorKey: "id",
-       cell: function render({ getValue }) {
-         return (
-           <button
-             className="rounded border border-gray-200 p-2 text-xs font-medium leading-tight transition duration-150 ease-in-out hover:bg-indigo-500 hover:text-white"
-             onClick={() =>
-               edit("posts", getValue() as number)
-             }
-           >
-             Edit
-           </button>
-         );
-       },
+          cell: function render({ getValue }) {
+          return (
+            <>
+              <button
+                className="rounded border border-gray-200 p-2 text-xs font-medium leading-tight transition duration-150 ease-in-out hover:bg-indigo-500 hover:text-white"
+                onClick={() => show("posts", getValue() as number)}
+              >
+                View
+              </button>
+              <button
+                className="rounded border border-gray-200 p-2 text-xs font-medium leading-tight transition duration-150 ease-in-out hover:bg-indigo-500 hover:text-white"
+                onClick={() => edit("posts", getValue() as number)}
+              >
+                Edit
+              </button>
+            </>
+          );
+        }
      },
    ],
    [],
@@ -496,7 +469,6 @@ In the code above, we use the `useTable()` hook from the `@pankod/refine-react-t
 Remember the records from our **posts** base on Airtable has a category field, we will map the  category fields to their corresponding titles on the **category** base we created on airtable. But first, we will add a category type to the `post.d.ts` file under `interfaces` under the `src` folder in the root directory of our application.
 
 ```tsx title="src/interfaces/post.d.ts"
-
 export interface IPost {
   id: string;
   name: string;
@@ -512,7 +484,6 @@ export interface ICategory {
   name: string;
   posts: string;
 }
-
 ```
 
 Next, we need to map records from different the **category** field to the **category** base on Airtable. For this, we're going to use the `useMany()` refine hook.
@@ -536,7 +507,6 @@ import { useNavigation, useDelete, GetManyResponse, useMany } from "@pankod/refi
 
 export const PostList: React.FC = () => {
   const { show, edit, create } = useNavigation();
-  const { mutate } = useDelete();
 
   const columns = React.useMemo<ColumnDef<IPost>[]>(
     () => [
@@ -546,19 +516,9 @@ export const PostList: React.FC = () => {
         accessorKey: "id",
       },
       {
-        id: "Name",
+        id: "name",
         header: "Name",
         accessorKey: "Name",
-      },
-      {
-        id: "title",
-        header: "Title",
-        accessorKey: "title",
-      },
-      {
-        id: "content",
-        header: "Content",
-        accessorKey: "content",
       },
       {
         id: "category",
@@ -579,66 +539,28 @@ export const PostList: React.FC = () => {
         accessorKey: "Status",
       },
       {
-        id: "createdAt",
-        header: "CreatedAt",
-        accessorKey: "createdAt",
-      },
-      {
         id: "action",
         header: "Action",
         accessorKey: "id",
         cell: function render({ getValue }) {
           return (
-            <button
-              className="rounded border border-gray-200 p-2 text-xs font-medium leading-tight transition duration-150 ease-in-out hover:bg-indigo-500 hover:text-white"
-              onClick={() =>
-                show("posts", getValue() as number)
-              }
-            >
-              View
-            </button>
+            <>
+              <button
+                className="rounded border border-gray-200 p-2 text-xs font-medium leading-tight transition duration-150 ease-in-out hover:bg-indigo-500 hover:text-white"
+                onClick={() => show("posts", getValue() as number)}
+              >
+                View
+              </button>
+              <button
+                className="rounded border border-gray-200 p-2 text-xs font-medium leading-tight transition duration-150 ease-in-out hover:bg-indigo-500 hover:text-white"
+                onClick={() => edit("posts", getValue() as number)}
+              >
+                Edit
+              </button>
+            </>
           );
-        },
-      },
-      {
-        id: "action",
-        header: "Action",
-        accessorKey: "id",
-        cell: function render({ getValue }) {
-          return (
-            <button
-              className="rounded border border-gray-200 p-2 text-xs font-medium leading-tight transition duration-150 ease-in-out hover:bg-indigo-500 hover:text-white"
-              onClick={() =>
-                edit("posts", getValue() as number)
-              }
-            >
-              Edit
-            </button>
-          );
-        },
-      },
-
-      {
-        id: "action",
-        header: "Action",
-        accessorKey: "id",
-        cell: function render({ getValue }) {
-          return (
-            <button
-              className="rounded border border-gray-200 p-2 text-xs font-medium leading-tight transition duration-150 ease-in-out hover:bg-red-500 hover:text-white"
-              onClick={() =>
-                mutate({
-                  id: getValue() as number,
-                  resource: "posts",
-                })
-              }
-            >
-              Delete
-            </button>
-
-          );
-        },
-      },
+        }
+      }
     ],
     [],
   );
@@ -776,7 +698,7 @@ export default App;
         <div class="control orange"></div>
         <div class="control green"></div>
     </div>
-   <img src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2023-01-18-airtable-crud-app/handling-relationships.jpeg"  alt="react crud app airtable" />
+   <img src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2023-01-18-airtable-crud-app/handling-relationships-2.jpeg"  alt="react crud app airtable" />
 
 </div>
 
@@ -798,7 +720,6 @@ Next, with the following code:
 
 
 ```tsx title="src/pages/post/show.tsx"
-
 import { useSelect, useShow } from "@pankod/refine-core";
 import { IPost } from "../../interfaces/post";
 
@@ -833,27 +754,6 @@ export const PostShow: React.FC = () => {
         />
       </div>
       <div className="mb-6">
-        <label className="mb-2 block text-sm font-medium">Title</label>
-        <input
-          value={record?.title}
-          disabled
-          className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm"
-        />
-      </div>
-
-      <div className="mb-6">
-        <label className="mb-2 block text-sm font-medium">Content</label>
-        <textarea
-          disabled
-          value={record?.content}
-          id="content"
-          className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm "
-          placeholder="Content"
-          rows={10}
-        />
-      </div>
-
-      <div className="mb-6">
         <label className="mb-2 block text-sm font-medium">Category</label>
         <input
           value={options?.find(curr => curr?.value === record?.category[0])?.label || record?.category}
@@ -861,21 +761,10 @@ export const PostShow: React.FC = () => {
           className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm"
         />
       </div>
-
       <div className="mb-6">
         <label className="mb-2 block text-sm font-medium">Status</label>
         <input
           value={record?.Status}
-          disabled
-          className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm"
-        />
-      </div>
-
-      <div className="mb-6">
-        <label className="mb-2 block text-sm font-medium">Created At</label>
-        <input
-          type={"date"}
-          value={record?.createdAt}
           disabled
           className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm"
         />
@@ -894,7 +783,7 @@ const { options } = useSelect({
     defaultValue: queryResult?.data?.data.category[0],
     optionLabel: "name",
     optionValue: "id"
-  });
+});
 ```
 The hook accepts an object with properties `resource` which directs the hook to the base containing the records, `defaultValue` which specifies a default value for the options, `optionLabel`, which specifies the field on the base that will be mapped to the label and `optionValue`, which specifies the field on the base that will be mapped to the value.  
 
@@ -1007,54 +896,6 @@ export const PostCreate: React.FC = () => {
            </p>
          )}
        </div>
-      
- 
-       <div className="mb-6">
-         <label
-           htmlFor="title"
-           className="mb-2 block text-sm font-medium"
-         >
-           Title
-         </label>
-         <input
-           {...register("title", { required: true })}
-           type="text"
-           id="title"
-           className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm "
-           placeholder="Title"
-         />
-         {errors.title && (
-           <p className="mt-1 text-sm text-red-600">
-             <span className="font-medium">Oops!</span> This
-             field is required
-           </p>
-         )}
-       </div>
- 
- 
-       <div className="mb-6">
-         <label
-           htmlFor="content"
-           className="mb-2 block text-sm font-medium"
-         >
-           Content
-         </label>
-         <textarea
-           {...register("content", { required: true })}
-           id="content"
-           className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm "
-           placeholder="Content"
-           rows={10}
-         />
-         {errors.content && (
-           <p className="mt-1 text-sm text-red-600">
-             <span className="font-medium">Oops!</span> This
-             field is required
-           </p>
-         )}
-       </div>
- 
- 
        <div className="mb-6">
          <label
            htmlFor="category"
@@ -1084,9 +925,6 @@ export const PostCreate: React.FC = () => {
            </p>
          )}
        </div>
- 
- 
- 
        <div className="mb-6">
          <label
            htmlFor="status"
@@ -1103,8 +941,6 @@ export const PostCreate: React.FC = () => {
            <option value="rejected">rejected</option>
          </select>
        </div>
- 
- 
        <button
          type="submit"
          className="flex w-full items-center rounded-lg bg-indigo-500 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-indigo-600 sm:w-auto"
@@ -1116,7 +952,6 @@ export const PostCreate: React.FC = () => {
    </div>
  );
 };
-
 ```
 </p>
 </details>
@@ -1134,7 +969,6 @@ import React from "react";
 import { useTable, ColumnDef, flexRender } from "@pankod/refine-react-table";
 import { IPost } from "../../interfaces/post";
 import { useNavigation, useDelete } from "@pankod/refine-core";
- 
  
 export const PostList: React.FC = () => {
  const { ... , create } = useNavigation();
@@ -1215,176 +1049,99 @@ Next, with the following code:
 
 
 ```tsx title="src/pages/post/edit.tsx"
-
-import { useSelect } from "@pankod/refine-core";
 import { useForm } from "@pankod/refine-react-hook-form";
-import React, { useEffect } from "react";
+import React from "react";
 
 export const PostEdit: React.FC = () => {
-  const {
-    refineCore: { onFinish, formLoading, queryResult },
-    register,
-    handleSubmit,
-    resetField,
-    formState: { errors },
-  } = useForm();
+    const {
+        refineCore: { onFinish, formLoading },
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm();
 
-  const { options } = useSelect({
-    resource: "category",
-    defaultValue: queryResult?.data?.data.category.id,
-    optionLabel: "name",
-    optionValue: "id"
-  });
+    return (
+        <div className="container mx-auto">
+            <br />
+            <form onSubmit={handleSubmit(onFinish)}>
+                <div className="mb-6">
+                    <label
+                        htmlFor="Name"
+                        className="mb-2 block text-sm font-medium"
+                    >
+                        Name
+                    </label>
+                    <input
+                        {...register("Name", { required: true })}
+                        type="text"
+                        id="Name"
+                        className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm"
+                        placeholder="Name"
+                    />
+                    {errors.title && (
+                        <p className="mt-1 text-sm text-red-600">
+                            <span className="font-medium">Oops!</span> This
+                            field is required
+                        </p>
+                    )}
+                </div>
+                <div className="mb-6">
+                    <label
+                        htmlFor="category"
+                        className="mb-2 block text-sm font-medium"
+                    >
+                        Category
+                    </label>
 
-  console.log('options', options, queryResult);
+                    <select
+                        defaultValue={""}
+                        {...register("category", { required: true })}
+                        className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm"
+                    >
+                        <option value={""} disabled>
+                            Please select
+                        </option>
+                        <option value="Information Technology">
+                            Information Technology
+                        </option>
+                        <option value="Fun">Fun</option>
+                        <option value="Drama">Drama</option>
+                    </select>
 
-  useEffect(() => {
-    resetField("category.id");
-  }, [options]);
+                    {errors.category && (
+                        <p className="mt-1 text-sm text-red-600">
+                            <span className="font-medium">Oops!</span> This
+                            field is required
+                        </p>
+                    )}
+                </div>
 
-  const onSubmit = (values: any)=> {
-    onFinish({
-      ...values,
-      category: [values.category]
-    })
-  }
-  
-  return (
-    <div className="container mx-auto">
-      <br />
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="mb-6">
-          <label
-            htmlFor="Name"
-            className="mb-2 block text-sm font-medium"
-          >
-            Name
-          </label>
-          <input
-            {...register("Name", { required: true })}
-            type="text"
-            id="Name"
-            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm"
-            placeholder="Name"
-          />
-          {errors.title && (
-            <p className="mt-1 text-sm text-red-600">
-              <span className="font-medium">Oops!</span> This
-              field is required
-            </p>
-          )}
+                <div className="mb-6">
+                    <label
+                        htmlFor="status"
+                        className="mb-2 block text-sm font-medium"
+                    >
+                        Status
+                    </label>
+                    <select
+                        {...register("Status")}
+                        className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm"
+                    >
+                        <option value="published">published</option>
+                        <option value="draft">draft</option>
+                        <option value="rejected">rejected</option>
+                    </select>
+                </div>
+
+                <button
+                    type="submit"
+                    className="flex w-full items-center rounded-lg bg-indigo-500 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-indigo-600 sm:w-auto"
+                >
+                    {formLoading ? "loading..." : <span>Save</span>}
+                </button>
+            </form>
         </div>
-        
-
-        <div className="mb-6">
-          <label
-            htmlFor="title"
-            className="mb-2 block text-sm font-medium"
-          >
-            Title
-          </label>
-          <input
-            {...register("title", { required: true })}
-            type="text"
-            id="title"
-            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm "
-            placeholder="Title"
-          />
-          {errors.title && (
-            <p className="mt-1 text-sm text-red-600">
-              <span className="font-medium">Oops!</span> This
-              field is required
-            </p>
-          )}
-        </div>
-
-
-        <div className="mb-6">
-          <label
-            htmlFor="content"
-            className="mb-2 block text-sm font-medium"
-          >
-            Content
-          </label>
-          <textarea
-            {...register("content", { required: true })}
-            id="content"
-            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm "
-            placeholder="Content"
-            rows={10}
-          />
-          {errors.content && (
-            <p className="mt-1 text-sm text-red-600">
-              <span className="font-medium">Oops!</span> This
-              field is required
-            </p>
-          )}
-        </div>
-
-
-        <div className="mb-6">
-          <label
-            htmlFor="category"
-            className="mb-2 block text-sm font-medium"
-          >
-            Category
-          </label>
-          
-          <select
-            defaultValue={""}
-            {...register("category", { required: true })}
-            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm"
-          >
-            <option value={""} disabled>
-              Please select
-            </option>
-
-            {options?.map((category) => (
-              <option key={category.value} value={category.value}>
-                {category.label}
-              </option>
-            ))}
-          </select>
-
-
-          {errors.category && (
-            <p className="mt-1 text-sm text-red-600">
-              <span className="font-medium">Oops!</span> This
-              field is required
-            </p>
-          )}
-        </div>
-
-
-
-        <div className="mb-6">
-          <label
-            htmlFor="status"
-            className="mb-2 block text-sm font-medium"
-          >
-            Status
-          </label>
-          <select
-            {...register("Status")}
-            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm"
-          >
-            <option value="published">published</option>
-            <option value="draft">draft</option>
-            <option value="rejected">rejected</option>
-          </select>
-        </div>
-
-
-        <button
-          type="submit"
-          className="flex w-full items-center rounded-lg bg-indigo-500 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-indigo-600 sm:w-auto"
-        >
-          {formLoading ? 'loading...': (<span>Save</span>)}
-          
-        </button>
-      </form>
-    </div>
-  );
+    );
 };
 ```
 </p>
@@ -1401,7 +1158,6 @@ We'll add an **Edit** button to each row, so we'll need to update our `<PostList
 
 
 ```tsx title="src/pages/post/list.tsx"
-
 import React from "react";
 import { useTable, ColumnDef, flexRender } from "@pankod/refine-react-table";
 import { IPost } from "../../interfaces/post";
@@ -1453,7 +1209,7 @@ After this, we can now add the component `<PostEdit/>` in the `edit.tsx` file to
         <div class="control orange"></div>
         <div class="control green"></div>
     </div>
-   <img src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2023-01-18-airtable-crud-app/editing_post-min.gif"  alt="react crud app airtable" />
+   <img src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2023-01-18-airtable-crud-app/editing-min.gif"  alt="react crud app airtable" />
 
 </div>
 
@@ -1468,7 +1224,6 @@ We'll add a **Delete** button to each row because refine doesn't add one automat
 
 
 ```tsx title="src/pages/post/list.tsx"
-
 import React from "react";
 import { useTable, ColumnDef, flexRender } from "@pankod/refine-react-table";
 import { IPost } from "../../interfaces/post";
