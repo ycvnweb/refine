@@ -10,6 +10,7 @@ This change may also including completely removing the `Layout` prop and make it
 
 - Remove `Sider`, `Title`, `Header` and `Footer` props from `<Refine />` component.
 - We may also consider removing `Layout` prop and present it as a wrapper.
+- `<Sider />` should be able to accept menu items as prop for customization.
 - Update the internal logic to respect the changes.
 - Deprecate `LayoutWrapper` since it will be no-op.
 - Update docs and examples to reflect the changes.
