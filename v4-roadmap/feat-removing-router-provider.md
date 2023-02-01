@@ -10,7 +10,7 @@ If we end up using a different interface for `RouterProvider`, we should mark al
 
 ## Caveats
 
-We need to figure out a way to handle redirect logics present in `@pankod/refine-core` also we need to find a way to make buttons like <ShowButton />, <CreateButton /> etc. work without `routerProvider` or a smaller version of `routerProvider` which only provides redirect logic. We might use an interface for router provider like `{ push, replace, back, parse }` and let users implement it themselves.
+We need to figure out a way to handle redirect logics present in `@pankod/refine-core` also we need to find a way to make buttons like <ShowButton />, <CreateButton /> etc. work without `routerProvider` or a smaller version of `routerProvider` which only provides redirect logic. We might use an interface for router provider like `{ go?, back?, parse? }` and let users implement it themselves.
 
 There might be a need of an additional function to update url params in the router provider, in some cases users may want to use `syncWithLocation` feature but their router might have an alternative way to update the url params.
 
@@ -18,5 +18,6 @@ There might be a need of an additional function to update url params in the rout
 
 - Create helper functions like `createResourceRoutes` and `createResourceRoute` which can be used to create resource routes.
 - Remove/Update `routerProvider` prop from `<Refine />` component.
+- `parse` function should return an object with a proper interface like `{ syncWithLocation: {...}, step: {...}, ... }`.
 - Update docs to reflect the changes.
 - Update examples to reflect the changes.
