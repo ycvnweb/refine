@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdocumentation=self.webpackChunkdocumentation||[]).push([[38041],{91731:s=>{s.exports=JSON.parse('{"label":"headless-cms","permalink":"/blog/tags/headless-cms","allTagsPath":"/blog/tags","count":1}')}}]);
