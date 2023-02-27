@@ -36,7 +36,7 @@ To make this example more visual, we used the [`@pankod/refine-antd`](https://gi
 <p>
 
 ```tsx title="src/authProvider.ts"
-import { AuthProvider } from "@pankod/refine-core";
+import { AuthBindings } from "@pankod/refine-core";
 import { AuthHelper } from "@pankod/refine-strapi-v4";
 import axios from "axios";
 
@@ -46,7 +46,7 @@ const API_URL = "YOUR_API_URL";
 const TOKEN_KEY = "strapi-jwt-token";
 const strapiAuthHelper = AuthHelper(API_URL + "/api");
 
-export const authProvider: AuthProvider = {
+const authProvider: AuthBindings = {
     login: async ({ username, password }) => {
         const { data, status } = await strapiAuthHelper.login(
             username,
@@ -56,27 +56,48 @@ export const authProvider: AuthProvider = {
             localStorage.setItem(TOKEN_KEY, data.jwt);
 
             // set header axios instance
-            axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${data.jwt}`;
-            return Promise.resolve();
+            axiosInstance.defaults.headers.common[
+                "Authorization"
+            ] = `Bearer ${data.jwt}`;
+
+            return Promise.resolve({
+                success: true,
+                redirectTo: "/",
+            });
         }
-        return Promise.reject();
+        return Promise.resolve({
+            success: false,
+            error: new Error("Invalid username or password"),
+        });
     },
     logout: () => {
         localStorage.removeItem(TOKEN_KEY);
-        return Promise.resolve();
+        return Promise.resolve({
+            success: true,
+            redirectTo: "/login",
+        });
     },
-    checkError: () => Promise.resolve(),
-    checkAuth: () => {
+    onError: () => Promise.resolve({}),
+    check: () => {
         const token = localStorage.getItem(TOKEN_KEY);
         if (token) {
-            axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`,
-            return Promise.resolve();
+            axiosInstance.defaults.headers.common[
+                "Authorization"
+            ] = `Bearer ${token}`;
+            return Promise.resolve({
+                authenticated: true,
+            });
         }
 
-        return Promise.reject();
+        return Promise.resolve({
+            authenticated: false,
+            error: new Error("Not authenticated"),
+            logout: true,
+            redirectTo: "/login",
+        });
     },
     getPermissions: () => Promise.resolve(),
-    getUserIdentity: async () => {
+    getIdentity: async () => {
         const token = localStorage.getItem(TOKEN_KEY);
         if (!token) {
             return Promise.reject();
@@ -92,7 +113,7 @@ export const authProvider: AuthProvider = {
             });
         }
 
-        return Promise.reject();
+        return Promise.resolve();
     },
 };
 ```

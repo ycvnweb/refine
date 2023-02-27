@@ -172,7 +172,7 @@ export default LoginPage;
 In refine, authentication and authorization processes are performed with the auth provider. Let's write a provider for Azure AD.
 
 ```tsx title="src/App.tsx"
-import { Refine, AuthProvider } from "@pankod/refine-core";
+import { Refine, AuthBindings } from "@pankod/refine-core";
 import { Layout } from "@pankod/refine-antd";
 import routerProvider from "@pankod/refine-react-router-v6";
 import dataProvider from "@pankod/refine-simple-rest";
@@ -224,33 +224,55 @@ const App: React.FC = () => {
         account,
     };
 
-    const authProvider: AuthProvider = {
+    const authProvider: AuthBindings = {
         login: async () => {
             instance.loginRedirect(); // Pick the strategy you prefer i.e. redirect or popup
-            return Promise.resolve(false);
+            return Promise.resolve({
+                success: true,
+            });
         },
-        register: async () => Promise.resolve(),
-        resetPassword: async () => Promise.resolve(),
-        updatePassword: async () => Promise.resolve(),
-        logout: async () => Promise.resolve(),
-        checkAuth: async () => {
+        register: async () =>
+            Promise.resolve({
+                success: true,
+            }),
+        resetPassword: async () =>
+            Promise.resolve({
+                success: true,
+            }),
+        updatePassword: async () =>
+            Promise.resolve({
+                success: true,
+            }),
+        logout: async () =>
+            Promise.resolve({
+                success: true,
+            }),
+        check: async () => {
             try {
                 if (account) {
                     const token = await instance.acquireTokenSilent(request);
                     localStorage.setItem(TOKEN_KEY, token.accessToken);
-                    return Promise.resolve();
+                    return Promise.resolve({
+                        authenticated: true,
+                    });
                 } else {
-                    return Promise.reject();
+                    return Promise.resolve({
+                        authenticated: false,
+                        redirectTo: "/login",
+                    });
                 }
             } catch (e) {
-                return Promise.reject();
+                return Promise.resolve({
+                    authenticated: false,
+                    redirectTo: "/login",
+                });
             }
         },
-        checkError: async () => Promise.resolve(),
+        onError: async () => Promise.resolve(),
         getPermissions: async () => Promise.resolve(),
-        getUserIdentity: async (): Promise<AccountInfo> => {
+        getIdentity: async (): Promise<AccountInfo> => {
             if (account === null || account === undefined) {
-                return Promise.reject();
+                return Promise.resolve();
             }
             return Promise.resolve(account);
         },

@@ -444,7 +444,7 @@ There are two ways to do Server Side Authentication with Remix. You can choose o
 First, let's create our `AuthProvider`. For more information on `AuthProvider`, visit our [AuthProvider documentation][authprovider].
 
 ```tsx title="app/authProvider.ts"
-import { AuthProvider } from "@pankod/refine-core";
+import { AuthBindings } from "@pankod/refine-core";
 
 const mockUsers = [
     {
@@ -463,35 +463,53 @@ export const authProvider: AuthProvider = {
         const user = mockUsers.find((item) => item.username === username);
 
         if (user) {
-            return Promise.resolve(user);
+            return Promise.resolve({
+                success: true,
+                redirectTo: "/",
+            });
         }
 
-        return Promise.reject();
+        return Promise.resolve({
+            success: false,
+            error: new Error("Invalid username or password"),
+        });
     },
     logout: () => {
-        return Promise.resolve("/logout");
+        return Promise.resolve({
+            success: true,
+            redirectTo: "/",
+        });
     },
-    checkError: (error) => {
+    onError: (error) => {
         if (error && error.statusCode === 401) {
-            return Promise.reject();
+            return Promise.resolve({
+                logout: true,
+                redirectTo: "/login",
+            });
         }
 
-        return Promise.resolve();
+        return Promise.resolve({});
     },
-    checkAuth: async ({ request, storage }) => {
+    check: async ({ request, storage }) => {
         const session = await storage.getSession(request.headers.get("Cookie"));
 
         const user = session.get("user");
 
         if (!user) {
-            return Promise.reject();
+            return Promise.resolve({
+                authenticated: false,
+                logout: true,
+                redirectTo: "/login",
+            });
         }
-        return Promise.resolve();
+        return Promise.resolve({
+            authenticated: true,
+        });
     },
     getPermissions: async () => {
         return Promise.resolve();
     },
-    getUserIdentity: async () => {
+    getIdentity: async () => {
         return Promise.resolve();
     },
 };
@@ -545,7 +563,7 @@ export async function requireUserId(
     redirectTo: string = new URL(request.url).pathname,
 ) {
     try {
-        const user = await authProvider.checkAuth?.({ request, storage });
+        const user = await authProvider.check?.({ request, storage });
         return user;
     } catch (error) {
         const searchParams = new URLSearchParams([["to", redirectTo]]);
@@ -716,10 +734,10 @@ npm i js-cookie cookie
 npm i -D @types/js-cookie
 ```
 
-We will set/destroy cookies in the `login`, `logout` and `checkAuth` functions of our `AuthProvider`.
+We will set/destroy cookies in the `login`, `logout` and `check` functions of our `AuthProvider`.
 
 ```tsx title="app/authProvider.ts"
-import { AuthProvider } from "@pankod/refine-core";
+import { AuthBindings } from "@pankod/refine-core";
 // highlight-start
 import Cookies from "js-cookie";
 import * as cookie from "cookie";
@@ -739,64 +757,81 @@ const mockUsers = [
 // highlight-next-line
 const COOKIE_NAME = "user";
 
-export const authProvider: AuthProvider = {
-    login: ({ username, password, remember }) => {
+export const authProvider: AuthBindings = {
+ export const authProvider: AuthBindings = {
+    login: ({ email }) => {
         // Suppose we actually send a request to the back end here.
-        const user = mockUsers.find((item) => item.username === username);
+        const user = mockUsers.find((item) => item.email === email);
 
         if (user) {
-            // highlight-next-line
             Cookies.set(COOKIE_NAME, JSON.stringify(user));
-            return Promise.resolve();
+            return Promise.resolve({
+                success: true,
+            });
         }
 
-        return Promise.reject();
+        return Promise.resolve({
+            success: false,
+        });
     },
     logout: () => {
-        // highlight-next-line
         Cookies.remove(COOKIE_NAME);
 
-        return Promise.resolve();
+        return Promise.resolve({
+            success: true,
+            redirectTo: "/login",
+        });
     },
-    checkError: (error) => {
+    onError: (error) => {
         if (error && error.statusCode === 401) {
-            return Promise.reject();
+            return Promise.resolve({
+                error: "Unauthorized",
+                logout: true,
+                redirectTo: "/login",
+            });
         }
 
-        return Promise.resolve();
+        return Promise.resolve({});
     },
-    checkAuth: async (context) => {
-        // highlight-start
+    check: async (context) => {
         let user = undefined;
         if (context) {
-            // for SSR
             const { request } = context;
             const parsedCookie = cookie.parse(request.headers.get("Cookie"));
             user = parsedCookie[COOKIE_NAME];
         } else {
-            // for CSR
             const parsedCookie = Cookies.get(COOKIE_NAME);
             user = parsedCookie ? JSON.parse(parsedCookie) : undefined;
         }
-        // highlight-end
 
         if (!user) {
-            return Promise.reject();
+            return Promise.resolve({
+                authenticated: false,
+                error: new Error("Unauthorized"),
+                logout: true,
+                redirectTo: "/login",
+            });
         }
-        return Promise.resolve();
+
+        return Promise.resolve({
+            authenticated: true,
+        });
     },
     getPermissions: async () => {
         return Promise.resolve();
     },
-    getUserIdentity: async () => {
+    getIdentity: async () => {
         return Promise.resolve();
     },
 };
+};
+
+
 ```
 
 Tadaa! that's all!
 
-`checkAuthentication` expects your authProvider and `request`'s context. It uses the `checkAuth` from the `authProvider` to check for authentication. In unauthenticated cases, it redirects to `/login` while keeping the original route to be navigated to after successful login.
+`checkAuthentication` expects your authProvider and `request`'s context. It uses the `check` from the `authProvider` to check for authentication. In unauthenticated cases, it redirects to `/login` while keeping the original route to be navigated to after successful login.
 
 ```tsx title="app/routes/index.tsx"
 import { json, LoaderFunction } from "@remix-run/node";

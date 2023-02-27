@@ -24,22 +24,44 @@ const { Button } = RefineChakra;
 window.__refineAuthStatus = false;
 
 const authProvider = {
-    login: (params) => {
-        console.log("params", params);
+    login: () => {
         window.__refineAuthStatus = true;
-        return Promise.resolve();
+        return Promise.resolve({
+            success: true,
+            redirectTo: "/",
+        });
     },
-    register: () => Promise.resolve(),
-    forgotPassword: () => Promise.resolve(),
-    updatePassword: () => Promise.resolve(),
+    register: () => {
+        return Promise.resolve({
+            success: true,
+        });
+    },
+    forgotPassword: () => {
+        return Promise.resolve({
+            success: true,
+        });
+    },
+    updatePassword: () => {
+        return Promise.resolve({
+            success: true,
+        });
+    },
     logout: () => {
         window.__refineAuthStatus = false;
+        return Promise.resolve({
+            success: true,
+            redirectTo: "/",
+        });
     },
-    checkAuth: () =>
-        window.__refineAuthStatus ? Promise.resolve() : Promise.reject(),
-    checkError: () => Promise.resolve(),
+    check: () => {
+        return Promise.resolve({
+            authenticated: window.__refineAuthStatus,
+            redirectTo: window.__refineAuthStatus ? false : "/login",
+        });
+    },
+    onError: () => Promise.resolve({}),
     getPermissions: () => Promise.resolve(),
-    getUserIdentity: () => Promise.resolve(),
+    getIdentity: () => Promise.resolve(),
 };
 
 setRefineProps({ Sider: () => null, dataProvider: dataProvider("api") });
@@ -403,9 +425,13 @@ const authProvider: AuthProvider = {
         // You can handle the update password process according to your needs.
 
         // If the process is successful.
-        return Promise.resolve();
+        return Promise.resolve({
+            success: true,
+        });
 
-        return Promise.reject();
+        return Promise.resolve({
+            success: false,
+        });
     },
     // --
 };
@@ -963,5 +989,5 @@ interface FormPropsType extends UseFormProps {
 [forgot-password]: /docs/api-reference/core/providers/auth-provider/#forgotpassword
 [update-password]: /docs/api-reference/core/providers/auth-provider/#updatepassword
 [get-permissions]: /docs/api-reference/core/providers/auth-provider/#getpermissions-
-[check-auth]: /docs/api-reference/core/providers/auth-provider/#checkauth-
+[check-auth]: /docs/api-reference/core/providers/auth-provider/#check-
 [logout]: /docs/api-reference/core/providers/auth-provider/#logout-

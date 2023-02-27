@@ -9,15 +9,6 @@ image: https://refine.ams3.cdn.digitaloceanspaces.com/blog/2022-03-22-refine-wit
 hide_table_of_contents: false
 ---
 
-
-
-
-
-
-
-
-
-
 <div class="img-container">
     <div class="window">
         <div class="control red"></div>
@@ -29,7 +20,6 @@ hide_table_of_contents: false
 <br />
 
 With **refine**'s **headless** feature, you can include any UI in your project and take full advantage of all its features without worrying about compatibility. To build a project with a vintage `Windows95` style using [React95](https://react95.io/) UI components, we'll use the **refine** headless feature.
-
 
 ## Introduction
 
@@ -82,13 +72,13 @@ const SUPABASE_URL = "YOUR_DATABASE_URL";
 const SUPABASE_KEY = "YOUR_SUPABASE_KEY";
 
 export const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY, {
-     db: {
-         schema: "public",
-     },
-     auth: {
-         persistSession: true,
-     },
- });
+    db: {
+        schema: "public",
+    },
+    auth: {
+        persistSession: true,
+    },
+});
 ```
 
 </p>
@@ -101,53 +91,78 @@ export const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY, {
 <p>
 
 ```tsx title="src/authProvider.ts"
-import { AuthProvider } from "@pankod/refine-core";
+import { AuthBindings } from "@pankod/refine-core";
 
 import { supabaseClient } from "utility";
 
-const authProvider: AuthProvider = {
-    login: async ({ username, password }) => {
-        const { user, error } = await supabaseClient.auth.signIn({
-            email: username,
+const authProvider: AuthBindings = {
+    login: async ({ email, password }) => {
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
+            email,
             password,
         });
 
         if (error) {
-            return Promise.reject(error);
+            return Promise.resolve({
+                success: false,
+                error: error || new Error("Invalid email or password"),
+            });
         }
 
-        if (user) {
-            return Promise.resolve();
+        if (data?.user) {
+            return Promise.resolve({
+                success: true,
+                redirectTo: "/",
+            });
         }
+
+        return Promise.resolve({
+            success: false,
+            error: error || new Error("Invalid email or password"),
+        });
     },
     logout: async () => {
         const { error } = await supabaseClient.auth.signOut();
 
         if (error) {
-            return Promise.reject(error);
+            return Promise.resolve({
+                success: false,
+                error: error || new Error("Invalid email or password"),
+            });
         }
 
-        return Promise.resolve("/");
+        return Promise.resolve({
+            success: true,
+            redirectTo: "/",
+        });
     },
-    checkError: () => Promise.resolve(),
-    checkAuth: () => {
-        const session = supabaseClient.auth.session();
+    onError: () => Promise.resolve({}),
+    check: async () => {
+        const { data, error } = await supabaseClient.auth.getSession();
+        const { session } = data;
 
-        if (session) {
-            return Promise.resolve();
+        if (!session) {
+            return Promise.resolve({
+                authenticated: false,
+                error: error || new Error("Session not found"),
+            });
         }
 
-        return Promise.reject();
+        return Promise.resolve({
+            authenticated: true,
+        });
     },
     getPermissions: async () => {
-        const user = supabaseClient.auth.user();
+        const { data } = await supabaseClient.auth.getUser();
+        const { user } = data;
 
         if (user) {
             return Promise.resolve(user.role);
         }
     },
-    getUserIdentity: async () => {
-        const user = supabaseClient.auth.user();
+    getIdentity: async () => {
+        const { data } = await supabaseClient.auth.getUser();
+        const { user } = data;
 
         if (user) {
             return Promise.resolve({
@@ -157,7 +172,6 @@ const authProvider: AuthProvider = {
         }
     },
 };
-
 export default authProvider;
 ```
 

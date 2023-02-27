@@ -319,12 +319,44 @@ const App = () => {
     };
 
     const authProvider = {
-        login: () => Promise.resolve(),
-        logout: () => Promise.resolve(),
-        checkAuth: () => Promise.resolve(),
-        checkError: () => Promise.resolve(),
-        getPermissions: () => Promise.resolve("admin"),
-        getUserIdentity: () => Promise.resolve(),
+        login: () => {
+            window.__refineAuthStatus = true;
+            return Promise.resolve({
+                success: true,
+                redirectTo: "/",
+            });
+        },
+        register: () => {
+            return Promise.resolve({
+                success: true,
+            });
+        },
+        forgotPassword: () => {
+            return Promise.resolve({
+                success: true,
+            });
+        },
+        updatePassword: () => {
+            return Promise.resolve({
+                success: true,
+            });
+        },
+        logout: () => {
+            window.__refineAuthStatus = false;
+            return Promise.resolve({
+                success: true,
+                redirectTo: "/",
+            });
+        },
+        check: () => {
+            return Promise.resolve({
+                authenticated: window.__refineAuthStatus,
+                redirectTo: window.__refineAuthStatus ? false : "/login",
+            });
+        },
+        onError: () => Promise.resolve({}),
+        getPermissions: () => Promise.resolve(),
+        getIdentity: () => Promise.resolve(),
     };
 
     return (

@@ -192,12 +192,40 @@ const { default: simpleRest } = RefineSimpleRest;
 const dataProvider = simpleRest("https://api.fake-rest.refine.dev");
 
 const authProvider = {
-    login: () => Promise.resolve(),
-    logout: () => Promise.resolve(),
-    checkAuth: () => Promise.resolve(),
-    checkError: () => Promise.resolve(),
-    getPermissions: () => Promise.resolve("admin"),
-    getUserIdentity: () => Promise.resolve(),
+    login: () => {
+        return Promise.resolve({
+            success: true,
+            redirectTo: "/",
+        });
+    },
+    register: () => {
+        return Promise.resolve({
+            success: true,
+        });
+    },
+    forgotPassword: () => {
+        return Promise.resolve({
+            success: true,
+        });
+    },
+    updatePassword: () => {
+        return Promise.resolve({
+            success: true,
+        });
+    },
+    logout: () => {
+        return Promise.resolve({
+            success: true,
+            redirectTo: "/",
+        });
+    },
+    check: () =>
+        Promise.resolve({
+            authenticated: true,
+        }),
+    onError: () => Promise.resolve({}),
+    getPermissions: () => Promise.resolve(["admin"]),
+    getIdentity: () => Promise.resolve(),
 };
 
 // visible-block-start

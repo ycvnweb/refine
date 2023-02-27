@@ -106,7 +106,7 @@ After clicking the `Login` button, you will be directed to the auth0 login scree
 In refine, authentication and authorization processes are performed with the auth provider. Let's write a provider for Auth0.
 
 ```tsx title="App.tsx"
-import { Refine, AuthProvider } from "@pankod/refine-core";
+import { Refine, AuthBindings } from "@pankod/refine-core";
 import {
     Layout,
     ReadyPage,
@@ -133,30 +133,55 @@ const App = () => {
         return <span>loading...</span>;
     }
 
-    const authProvider: AuthProvider = {
+    const authProvider: AuthBindings = {
         login: () => {
-            return Promise.resolve();
+            return Promise.resolve({
+                success: true,
+            });
         },
         logout: () => {
             logout({ returnTo: window.location.origin });
-            return Promise.resolve("/");
+            return Promise.resolve({
+                success: true,
+            });
         },
-        checkError: () => Promise.resolve(),
-        checkAuth: () => {
-            if (isAuthenticated) {
-                return Promise.resolve();
+        onError: () => Promise.resolve({}),
+        check: async () => {
+            try {
+                const token = await getIdTokenClaims();
+                if (token) {
+                    axios.defaults.headers.common = {
+                        Authorization: `Bearer ${token.__raw}`,
+                    };
+                    return Promise.resolve({
+                        authenticated: true,
+                    });
+                } else {
+                    return Promise.resolve({
+                        authenticated: false,
+                        error: new Error("Token not found"),
+                        redirectTo: "/login",
+                        logout: true,
+                    });
+                }
+            } catch (error: any) {
+                return Promise.resolve({
+                    authenticated: false,
+                    error: new Error(error),
+                    redirectTo: "/login",
+                    logout: true,
+                });
             }
-
-            return Promise.reject();
         },
         getPermissions: () => Promise.resolve(),
-        getUserIdentity: () => {
+        getIdentity: async () => {
             if (user) {
                 return Promise.resolve({
                     ...user,
                     avatar: user.picture,
                 });
             }
+            return Promise.resolve();
         },
     };
 
@@ -200,15 +225,15 @@ export default App;
 
 `logout` method comes from the `useAuth0` hook.
 
-#### checkError & getPermissions
+#### onError & getPermissions
 
 We revert to empty promise because Auth0 does not support it.
 
-#### checkAuth
+#### check
 
 We can use the `isAuthenticated` method, which returns the authentication status of the `useAuth0` hook.
 
-#### getUserIdentity
+#### getIdentity
 
 We can use it with the `user` from the `useAuth0` hook.
 

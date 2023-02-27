@@ -161,27 +161,38 @@ values={[
 <TabItem value="react-router-v6">
 
 ```tsx title="src/App.tsx"
-import { Refine, Authenticated, AuthProvider } from "@pankod/refine-core";
+import { Refine, Authenticated, AuthBindings } from "@pankod/refine-core";
 import routerProvider from "@pankod/refine-react-router-v6";
 
 import { CustomPage } from "pages/custom-page";
 
-const authProvider: AuthProvider = {
+const authProvider: AuthBindings = {
     login: (params: any) => {
         if (params.username === "admin") {
             localStorage.setItem("username", params.username);
-            return Promise.resolve();
+            return Promise.resolve({
+                success: true,
+                redirectTo: "/",
+            });
         }
 
-        return Promise.reject();
+        return Promise.resolve({
+            success: false,
+            error: new Error("Invalid username or password"),
+        });
     },
     logout: () => {
         localStorage.removeItem("username");
-        return Promise.resolve();
+        return Promise.resolve({
+            success: true,
+            redirectTo: "/login",
+        });
     },
-    checkError: () => Promise.resolve(),
-    checkAuth: () =>
-        localStorage.getItem("username") ? Promise.resolve() : Promise.reject(),
+    onError: () => Promise.resolve({}),
+    check: () =>
+        localStorage.getItem("username")
+            ? Promise.resolve({ authenticated: true })
+            : Promise.resolve({ authenticated: false, redirectTo: "/login" }),
     getPermissions: () => Promise.resolve(["admin"]),
 };
 
@@ -223,7 +234,7 @@ export default App;
 
 ```tsx title="src/App.tsx"
 // highlight-start
-import { Refine, Authenticated, AuthProvider } from "@pankod/refine-core";
+import { Refine, Authenticated, AuthBindings } from "@pankod/refine-core";
 import routerProvider from "@pankod/refine-react-location";
 // highlight-end
 
@@ -231,22 +242,33 @@ import routerProvider from "@pankod/refine-react-location";
 import { CustomPage } from "pages/custom-page";
 
 // highlight-start
-const authProvider: AuthProvider = {
+const authProvider: AuthBindings = {
     login: (params: any) => {
         if (params.username === "admin") {
             localStorage.setItem("username", params.username);
-            return Promise.resolve();
+            return Promise.resolve({
+                success: true,
+                redirectTo: "/",
+            });
         }
 
-        return Promise.reject();
+        return Promise.resolve({
+            success: false,
+            error: new Error("Invalid username or password"),
+        });
     },
     logout: () => {
         localStorage.removeItem("username");
-        return Promise.resolve();
+        return Promise.resolve({
+            success: true,
+            redirectTo: "/login",
+        });
     },
-    checkError: () => Promise.resolve(),
-    checkAuth: () =>
-        localStorage.getItem("username") ? Promise.resolve() : Promise.reject(),
+    onError: () => Promise.resolve({}),
+    check: () =>
+        localStorage.getItem("username")
+            ? Promise.resolve({ authenticated: true })
+            : Promise.resolve({ authenticated: false, redirectTo: "/login" }),
     getPermissions: () => Promise.resolve(["admin"]),
 };
 // highlight-end
@@ -289,30 +311,40 @@ export default App;
 
 ```tsx title="src/App.tsx"
 // highlight-start
-import { Refine, Authenticated, AuthProvider } from "@pankod/refine-core";
+import { Refine, Authenticated, AuthBindings } from "@pankod/refine-core";
 import routerProvider from "@pankod/refine-react-router-v6";
 // highlight-end
 
 // highlight-next-line
 import { CustomPage } from "pages/custom-page";
 
-// highlight-start
-const authProvider: AuthProvider = {
+const authProvider: AuthBindings = {
     login: (params: any) => {
         if (params.username === "admin") {
             localStorage.setItem("username", params.username);
-            return Promise.resolve();
+            return Promise.resolve({
+                success: true,
+                redirectTo: "/",
+            });
         }
 
-        return Promise.reject();
+        return Promise.resolve({
+            success: false,
+            error: new Error("Invalid username or password"),
+        });
     },
     logout: () => {
         localStorage.removeItem("username");
-        return Promise.resolve();
+        return Promise.resolve({
+            success: true,
+            redirectTo: "/login",
+        });
     },
-    checkError: () => Promise.resolve(),
-    checkAuth: () =>
-        localStorage.getItem("username") ? Promise.resolve() : Promise.reject(),
+    onError: () => Promise.resolve({}),
+    check: () =>
+        localStorage.getItem("username")
+            ? Promise.resolve({ authenticated: true })
+            : Promise.resolve({ authenticated: false, redirectTo: "/login" }),
     getPermissions: () => Promise.resolve(["admin"]),
 };
 // highlight-end
@@ -330,20 +362,20 @@ const AuthenticatedCustomPage = () => {
 const App = () => {
     return (
         <Refine
-            ...
-// highlight-start
+            // ---
+            // highlight-start
             authProvider={authProvider}
             routerProvider={{
                 ...routerProvider,
                 routes: [
-                     {
+                    {
                         exact: true,
                         component: AuthenticatedCustomPage,
                         path: "/custom-page",
                     },
                 ],
             }}
-// highlight-end
+            // highlight-end
         />
     );
 };

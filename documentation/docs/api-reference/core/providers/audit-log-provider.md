@@ -228,10 +228,10 @@ When a record is created with the `useCreateMany` hook, refine automatically sen
     "resource": "posts",
     "data": [
         {
-            "title": "Hello World 1",
+            "title": "Hello World 1"
         },
         {
-            "title": "Hello World 2",
+            "title": "Hello World 2"
         }
     ],
     "meta": {
@@ -256,14 +256,14 @@ When a record is updated with the `useUpdateMany` hook, refine automatically sen
     "action": "updateMany",
     "resource": "posts",
     "data": {
-        "status": "published",
+        "status": "published"
     },
     "previousData": [
         {
-            "status": "draft",
+            "status": "draft"
         },
         {
-            "status": "archived",
+            "status": "archived"
         }
     ],
     "meta": {
@@ -297,7 +297,7 @@ When a record is deleted with the `useDeleteMany` hook, refine automatically sen
 </Tabs>
 
 :::tip
-If [`getUserIdentity`](/api-reference/core/providers/auth-provider.md) is defined in your auth provider, the `author` object is added to the event with the value returned by `getUserIdentity`.
+If [`getIdentity`](/api-reference/core/providers/auth-provider.md) is defined in your auth provider, the `author` object is added to the event with the value returned by `getIdentity`.
 
 :::
 
@@ -450,15 +450,15 @@ mutate({
     resource: "posts",
     values: [
         {
-            "title": "Title1",
-            "status": "published",
-            "content": "New Post Content1"
+            title: "Title1",
+            status: "published",
+            content: "New Post Content1",
         },
         {
-            "title": "Title2",
-            "status": "published",
-            "content": "New Post Content2"
-        }
+            title: "Title2",
+            status: "published",
+            content: "New Post Content2",
+        },
     ],
     metaData: {
         foo: "bar",
@@ -547,14 +547,14 @@ mutate({
     "action": "updateMany",
     "resource": "posts",
     "data": {
-        "title": "Updated New Title",
+        "title": "Updated New Title"
     },
     "previousData": [
         {
-            "title": "Title1",
+            "title": "Title1"
         },
         {
-            "title": "Title2",
+            "title": "Title2"
         }
     ],
     "meta": {

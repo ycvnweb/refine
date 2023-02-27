@@ -30,11 +30,11 @@ const authProvider = {
     logout: () => {
         window.__refineAuthStatus = false;
     },
-    checkAuth: () =>
+    check: () =>
         window.__refineAuthStatus ? Promise.resolve() : Promise.reject(),
-    checkError: () => Promise.resolve(),
+    onError: () => Promise.resolve(),
     getPermissions: () => Promise.resolve(),
-    getUserIdentity: () => Promise.resolve(),
+    getIdentity: () => Promise.resolve(),
 };
 
 import { Refine } from "@pankod/refine-core";

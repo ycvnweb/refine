@@ -28,18 +28,42 @@ window.__refineAuthStatus = false;
 const authProvider = {
     login: () => {
         window.__refineAuthStatus = true;
+        return Promise.resolve({
+            success: true,
+            redirectTo: "/",
+        });
     },
-    register: () => Promise.resolve(),
-    forgotPassword: () => Promise.resolve(),
-    updatePassword: () => Promise.resolve(),
+    register: () => {
+        return Promise.resolve({
+            success: true,
+        });
+    },
+    forgotPassword: () => {
+        return Promise.resolve({
+            success: true,
+        });
+    },
+    updatePassword: () => {
+        return Promise.resolve({
+            success: true,
+        });
+    },
     logout: () => {
         window.__refineAuthStatus = false;
+        return Promise.resolve({
+            success: true,
+            redirectTo: "/",
+        });
     },
-    checkAuth: () =>
-        window.__refineAuthStatus ? Promise.resolve() : Promise.reject(),
-    checkError: () => Promise.resolve(),
+    check: () => {
+        return Promise.resolve({
+            authenticated: window.__refineAuthStatus,
+            redirectTo: window.__refineAuthStatus ? false : "/login",
+        });
+    },
+    onError: () => Promise.resolve({}),
     getPermissions: () => Promise.resolve(),
-    getUserIdentity: () => Promise.resolve(),
+    getIdentity: () => Promise.resolve(),
 };
 
 const DashboardPage = () => {
@@ -187,17 +211,21 @@ render(<App />);
 After form submission, the [`login`][login] method of the [`authProvider`][auth-provider] will be called with the form values.
 
 ```tsx title="src/authProvider.ts"
-import { AuthProvider } from "@pankod/refine-core";
+import { AuthBindings } from "@pankod/refine-core";
 
-const authProvider: AuthProvider = {
+const authProvider: AuthBindings = {
     // --
     login: async ({ email, password, remember, providerName }) => {
         // You can handle the login process according to your needs.
 
         // If the process is successful.
-        return Promise.resolve();
+        return Promise.resolve({
+            status: true,
+        });
 
-        return Promise.reject();
+        return Promise.resolve({
+            status: false,
+        });
     },
     // --
 };
@@ -256,9 +284,13 @@ const authProvider: AuthProvider = {
         // You can handle the register process according to your needs.
 
         // If the process is successful.
-        return Promise.resolve();
+        return Promise.resolve({
+            status: true,
+        });
 
-        return Promise.reject();
+        return Promise.resolve({
+            status: false,
+        });
     },
     // --
 };
@@ -317,9 +349,13 @@ const authProvider: AuthProvider = {
         // You can handle the reset password process according to your needs.
 
         // If process is successful.
-        return Promise.resolve();
+        return Promise.resolve({
+            status: true,
+        });
 
-        return Promise.reject();
+        return Promise.resolve({
+            status: false,
+        });
     },
     // --
 };
@@ -378,9 +414,13 @@ const authProvider: AuthProvider = {
         // You can handle the update password process according to your needs.
 
         // If the process is successful.
-        return Promise.resolve();
+        return Promise.resolve({
+            status: true,
+        });
 
-        return Promise.reject();
+        return Promise.resolve({
+            status: false,
+        });
     },
     // --
 };
@@ -923,5 +963,5 @@ interface OAuthProvider {
 [forgot-password]: /docs/api-reference/core/providers/auth-provider/#forgotpassword
 [update-password]: /docs/api-reference/core/providers/auth-provider/#updatepassword
 [get-permissions]: /docs/api-reference/core/providers/auth-provider/#getpermissions-
-[check-auth]: /docs/api-reference/core/providers/auth-provider/#checkauth-
+[check-auth]: /docs/api-reference/core/providers/auth-provider/#check-
 [logout]: /docs/api-reference/core/providers/auth-provider/#logout-

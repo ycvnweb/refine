@@ -3,9 +3,9 @@ id: authenticated
 title: <Authenticated>
 ---
 
-`<Authenticated>` is the component form of [`useAuthenticated`][useauthenticated].
+`<Authenticated>` is the component form of [`useIsAuthenticated`][use-is-authenticated].
 
-It internally uses [`useAuthenticated`][useauthenticated]'s return values (`isSuccess`, `isLoading`, and, `isError`) to provide its functionality.
+It internally uses [`useIsAuthenticated`][use-is-authenticated]'s return values (`isSuccess`, `isLoading`, and, `isError`) to provide its functionality.
 
 When:
 
@@ -60,6 +60,6 @@ Component to render while checking whether the user is logged in.
 | fallback | Component to render if the user is not logged in. If `undefined`, the page will be redirected to `/login` | `ReactNode` |         |
 | loading  | Component to render while checking whether user is logged in                                              | `ReactNode` |         |
 
-[useauthenticated]: /api-reference/core/hooks/auth/useAuthenticated.md
+[use-is-authenticated]: docs/api-reference/core/hooks/auth/useIsAuthenticated
 [custom pages explanation]: /advanced-tutorials/custom-pages.md#authenticated-custom-pages
 [custom pages example]: /examples/custom-pages.md

@@ -376,7 +376,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 ```
 
-`checkAuthentication` expects your `authProvider` and **getServerSideProps**'s `context`. It uses the `checkAuth` from the `authProvider` to check for authentication and returns `isAuthenticated` accordingly. It also returns a `redirect` object to handle unauthenticated case. It redirects to `/login` while keeping the original route to be navigated to after successful login.
+`checkAuthentication` expects your `authProvider` and **getServerSideProps**'s `context`. It uses the `check` from the `authProvider` to check for authentication and returns `isAuthenticated` accordingly. It also returns a `redirect` object to handle unauthenticated case. It redirects to `/login` while keeping the original route to be navigated to after successful login.
 
 ## `syncWithLocation` and Query Parameters in SSR
 

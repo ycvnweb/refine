@@ -155,11 +155,11 @@ Since we preferred refine-supabase as the data provider during the CLI project i
 <p>
 
 ```ts title="src/authProvider.ts"
-import { AuthProvider } from "@pankod/refine-core";
+import { AuthBindings } from "@pankod/refine-core";
 
 import { supabaseClient } from "utility";
 
-const authProvider: AuthProvider = {
+const authProvider: AuthBindings = {
     login: async ({ email, password, providerName }) => {
         // sign in with oauth
         if (providerName) {
@@ -168,11 +168,16 @@ const authProvider: AuthProvider = {
             });
 
             if (error) {
-                return Promise.reject(error);
+                return Promise.resolve({
+                    success: false,
+                    error,
+                });
             }
 
             if (data?.url) {
-                return Promise.resolve(false);
+                return Promise.resolve({
+                    success: true,
+                });
             }
         }
 
@@ -183,15 +188,22 @@ const authProvider: AuthProvider = {
         });
 
         if (error) {
-            return Promise.reject(error);
+            return Promise.resolve({
+                success: false,
+                error,
+            });
         }
 
         if (data?.user) {
-            return Promise.resolve();
+            return Promise.resolve({
+                success: true,
+            });
         }
 
-        // for third-party login
-        return Promise.resolve(false);
+        return Promise.resolve({
+            success: false,
+            error: new Error("Login failed"),
+        });
     },
     register: async ({ email, password }) => {
         const { data, error } = await supabaseClient.auth.signUp({
@@ -200,12 +212,22 @@ const authProvider: AuthProvider = {
         });
 
         if (error) {
-            return Promise.reject(error);
+            return Promise.resolve({
+                success: false,
+                error,
+            });
         }
 
         if (data) {
-            return Promise.resolve();
+            return Promise.resolve({
+                success: true,
+            });
         }
+
+        return Promise.resolve({
+            success: false,
+            error: new Error("Login failed"),
+        });
     },
     forgotPassword: async ({ email }) => {
         const { data, error } = await supabaseClient.auth.resetPasswordForEmail(
@@ -216,12 +238,28 @@ const authProvider: AuthProvider = {
         );
 
         if (error) {
-            return Promise.reject(error);
+            return Promise.resolve({
+                success: false,
+                error,
+            });
         }
 
         if (data) {
-            return Promise.resolve();
+            notification.open({
+                type: "success",
+                message: "Success",
+                description:
+                    "Please check your email for a link to reset your password. If it doesn't appear within a few minutes, check your spam folder.",
+            });
+            return Promise.resolve({
+                success: true,
+            });
         }
+
+        return Promise.resolve({
+            success: false,
+            error: new Error("Forgot Password password failed"),
+        });
     },
     updatePassword: async ({ password }) => {
         const { data, error } = await supabaseClient.auth.updateUser({
@@ -229,32 +267,56 @@ const authProvider: AuthProvider = {
         });
 
         if (error) {
-            return Promise.reject(error);
+            return Promise.resolve({
+                success: false,
+                error,
+            });
         }
 
         if (data) {
-            return Promise.resolve("/");
+            return Promise.resolve({
+                success: true,
+                redirectTo: "/",
+            });
         }
+
+        return Promise.resolve({
+            success: false,
+            error: new Error("Update Password password failed"),
+        });
     },
     logout: async () => {
         const { error } = await supabaseClient.auth.signOut();
 
         if (error) {
-            return Promise.reject(error);
+            return Promise.resolve({
+                success: false,
+                error,
+            });
         }
 
-        return Promise.resolve("/");
+        return Promise.resolve({
+            success: true,
+            redirectTo: "/",
+        });
     },
-    checkError: () => Promise.resolve(),
-    checkAuth: async () => {
+    onError: () => Promise.resolve({}),
+    check: async () => {
         const { data } = await supabaseClient.auth.getSession();
         const { session } = data;
 
         if (!session) {
-            return Promise.reject();
+            return Promise.resolve({
+                authenticated: false,
+                error: new Error("Not authenticated"),
+                logout: true,
+                redirectTo: "/login",
+            });
         }
 
-        return Promise.resolve();
+        return Promise.resolve({
+            authenticated: true,
+        });
     },
     getPermissions: async () => {
         const user = await supabaseClient.auth.getUser();
@@ -263,7 +325,7 @@ const authProvider: AuthProvider = {
             return Promise.resolve(user.data.user?.role);
         }
     },
-    getUserIdentity: async () => {
+    getIdentity: async () => {
         const { data } = await supabaseClient.auth.getUser();
 
         if (data?.user) {

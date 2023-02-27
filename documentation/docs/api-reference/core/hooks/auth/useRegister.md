@@ -5,11 +5,26 @@ siderbar_label: useRegister
 description: useRegister data hook from refine is a modified version of react-query's useMutation for registration.
 ---
 
-`useRegister` calls `register` method from [`authProvider`](/api-reference/core/providers/auth-provider.md) under the hood. It registers the app if `register` method from `authProvider` resolves and if it rejects shows an error notification.
+`useRegister` calls `register` method from [`authProvider`](/api-reference/core/providers/auth-provider.md) under the hood.
 
-It returns the result of `react-query`'s [useMutation](https://react-query.tanstack.com/reference/useMutation).
+It returns the result of `react-query`'s [useMutation](https://react-query.tanstack.com/reference/useMutation) which includes many properties, some of which being isSuccess and isError.
 
-Data that is resolved from `register` will be returned as the `data` in the query result.
+Data that is resolved from `register` will be returned as the `data` in the query result with the following type:
+
+```ts
+type AuthActionResponse = {
+    success: boolean;
+    redirectTo?: string;
+    error?: Error;
+    [key: string]: unknown;
+};
+```
+
+-   `success`: A boolean indicating whether the operation was successful. If `success` is false, a notification will be shown.
+    -   When an `error` is provided, the notification will contain the error message and name. Otherwise, a generic error message will be shown with the following values `{ name: "Register Error", message: "Error while registering" }`.
+-   `redirectTo`: If has a value, the app will be redirected to the given URL.
+-   `error`: If has a value, a notification will be shown with the error message and name.
+-   `[key: string]`: Any additional data you wish to include in the response, keyed by a string identifier.
 
 ## Usage
 
@@ -51,100 +66,6 @@ A type parameter for the values can be provided to `useRegister`.
 const { mutate: register } = useRegister<{ email: string; password: string }>();
 ```
 
-:::
-
-## Logged In after successful registration
-
-If you want to log in the user after successful registration, you can use `useLogin` hook after `useRegister` hook `onSuccess` callback.
-
-```tsx title="pages/customRegisterPage"
-import { useRegister, useLogin } from "@pankod/refine-core";
-
-type FormVariables = {
-    email: string;
-    password: string;
-};
-
-export const RegisterPage = () => {
-    const { mutate: register } = useRegister<FormVariables>();
-    const { mutate: login } = useLogin<FormVariables>();
-
-    const onSubmit = (values: FormVariables) => {
-        register(values, {
-            //highlight-start
-            onSuccess: () => {
-                login(values);
-            },
-            //highlight-end
-        });
-    };
-
-    return (
-        <form onSubmit={onSubmit}>
-            <label>Email</label>
-            <input name="email" value="test@refine.com" />
-            <label>Password</label>
-            <input name="password" value="refine" />
-            <button type="submit">Submit</button>
-        </form>
-    );
-};
-```
-
-## Redirection after register
-
-We have 2 options for redirecting the app after registering successfully .
-
--   A custom url can be resolved from the promise returned from the `register` method of the [authProvider](/api-reference/core/providers/auth-provider.md).
-
-```tsx
-const authProvider: AuthProvider = {
-    ...
-    register: () => {
-        ...
-        return Promise.resolve("/custom-url");
-    }
-}
-```
-
-A custom url can be given to mutate the function from the `useRegister` hook if you want to redirect yourself to a certain url.
-
-```tsx
-import { useRegister } from "@pankod/refine-core";
-
-const { mutate: register } = useRegister();
-
-register({ redirectPath: "/custom-url" });
-```
-
-Then, you can handle this url in your `register` method of the `authProvider`.
-
-```tsx
-
-const authProvider: AuthProvider = {
-    ...
-    register: ({ redirectPath }) => {
-        ...
-        return Promise.resolve(redirectPath);
-    }
-}
-
-```
-
--   If the promise returned from the `register` method of the `authProvider` gets resolved with `false` no redirection will occur.
-
-```tsx
-const authProvider: AuthProvider = {
-    ...
-    register: () => {
-        ...
-        return Promise.resolve(false);
-    }
-}
-```
-
-:::tip
-If the promise returned from `register` is resolved with nothing, app will be redirected to the `/` route by default.
 :::
 
 :::caution
