@@ -68,9 +68,9 @@ setRefineProps({ Sider: () => null, dataProvider: dataProvider("api") });
 
 const Wrapper = ({ children }) => {
     return (
-        <RefineChakra.ChakraProvider theme={RefineChakra.refineTheme}>
+        <ChakraUI.ChakraProvider theme={RefineChakra.refineTheme}>
             {children}
-        </RefineChakra.ChakraProvider>
+        </ChakraUI.ChakraProvider>
     );
 };
 
@@ -508,13 +508,8 @@ setInitialRoutes(["/login"]);
 
 // visible-block-start
 import { Refine, useNavigation } from "@pankod/refine-core";
-import {
-    AuthPage,
-    Layout,
-    Form,
-    FormControlLabel,
-    Checkbox,
-} from "@pankod/refine-chakra-ui";
+import { AuthPage, Layout } from "@pankod/refine-chakra-ui";
+import { Form, FormControlLabel, Checkbox } from "@chakra-ui/react";
 import routerProvider from "@pankod/refine-react-router-v6";
 import { useFormContext } from "@pankod/refine-react-hook-form";
 
@@ -562,7 +557,8 @@ setInitialRoutes(["/register"]);
 
 // visible-block-start
 import { Refine, useRouterContext } from "@pankod/refine-core";
-import { AuthPage, Layout, Box } from "@pankod/refine-chakra-ui";
+import { AuthPage, Layout } from "@pankod/refine-chakra-ui";
+import { Box } from "@chakra-ui/react";
 import routerProvider from "@pankod/refine-react-router-v6";
 
 import { authProvider } from "./authProvider";
@@ -628,7 +624,8 @@ setInitialRoutes(["/login"]);
 
 // visible-block-start
 import { Refine, useRouterContext } from "@pankod/refine-core";
-import { AuthPage, Layout, Box } from "@pankod/refine-chakra-ui";
+import { AuthPage, Layout } from "@pankod/refine-chakra-ui";
+import { Box } from "@chakra-ui/react";
 import routerProvider from "@pankod/refine-react-router-v6";
 
 import { authProvider } from "./authProvider";
@@ -690,7 +687,8 @@ setInitialRoutes(["/login"]);
 
 // visible-block-start
 import { Refine, useRouterContext } from "@pankod/refine-core";
-import { AuthPage, Layout, Box } from "@pankod/refine-chakra-ui";
+import { AuthPage, Layout } from "@pankod/refine-chakra-ui";
+import { Box } from "@chakra-ui/react";
 import routerProvider from "@pankod/refine-react-router-v6";
 
 import { authProvider } from "./authProvider";
@@ -896,7 +894,8 @@ setInitialRoutes(["/login"]);
 
 // visible-block-start
 import { Refine, useRouterContext } from "@pankod/refine-core";
-import { AuthPage, Layout, Box, Heading } from "@pankod/refine-chakra-ui";
+import { AuthPage, Layout } from "@pankod/refine-chakra-ui";
+import { Box, Heading } from "@chakra-ui/react";
 import routerProvider from "@pankod/refine-react-router-v6";
 
 import { authProvider } from "./authProvider";

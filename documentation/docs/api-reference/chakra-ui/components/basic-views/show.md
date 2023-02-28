@@ -14,19 +14,19 @@ setRefineProps({
 
 const Wrapper = ({ children }) => {
     return (
-        <RefineChakra.ChakraProvider theme={RefineChakra.refineTheme}>
+        <ChakraUI.ChakraProvider theme={RefineChakra.refineTheme}>
             {children}
-        </RefineChakra.ChakraProvider>
+        </ChakraUI.ChakraProvider>
     );
 };
 
 const DummyListPage = () => (
-    <RefineChakra.VStack alignItems="flex-start">
-        <RefineChakra.Text>This page is empty.</RefineChakra.Text>
+    <ChakraUI.VStack alignItems="flex-start">
+        <ChakraUI.Text>This page is empty.</ChakraUI.Text>
         <ShowButton colorScheme="black" recordItemId="123">
             Show Item 123
         </ShowButton>
-    </RefineChakra.VStack>
+    </ChakraUI.VStack>
 );
 
 interface ICategory {
@@ -56,13 +56,8 @@ import dataProvider from "@pankod/refine-simple-rest";
 
 // visible-block-start
 import { useShow, useOne } from "@pankod/refine-core";
-import {
-    Show,
-    Heading,
-    Text,
-    MarkdownField,
-    Spacer,
-} from "@pankod/refine-chakra-ui";
+import { Show, MarkdownField } from "@pankod/refine-chakra-ui";
+import { Heading, Text, Spacer } from "@chakra-ui/react";
 
 const PostShow: React.FC<IResourceComponentsProps> = () => {
     const { queryResult } = useShow<IPost>();
@@ -150,7 +145,8 @@ import routerProvider from "@pankod/refine-react-router-v6";
 import dataProvider from "@pankod/refine-simple-rest";
 
 // visible-block-start
-import { Show, Heading } from "@pankod/refine-chakra-ui";
+import { Show } from "@pankod/refine-chakra-ui";
+import { Heading } from "@chakra-ui/react";
 
 const PostShow: React.FC = () => {
     return (
@@ -360,8 +356,8 @@ import dataProvider from "@pankod/refine-simple-rest";
 
 // visible-block-start
 import { useModalForm } from "@pankod/refine-react-hook-form";
+import { Show } from "@pankod/refine-chakra-ui";
 import {
-    Show,
     Modal,
     Button,
     ModalOverlay,
@@ -369,7 +365,7 @@ import {
     ModalCloseButton,
     ModalHeader,
     ModalBody,
-} from "@pankod/refine-chakra-ui";
+} from "@chakra-ui/react";
 
 const PostShow: React.FC = () => {
     const {
@@ -592,7 +588,8 @@ import routerProvider from "@pankod/refine-react-router-v6";
 import dataProvider from "@pankod/refine-simple-rest";
 
 // visible-block-start
-import { Show, Box, Breadcrumb } from "@pankod/refine-chakra-ui";
+import { Show, Breadcrumb } from "@pankod/refine-chakra-ui";
+import { Box } from "@chakra-ui/react";
 
 const CustomBreadcrumb: React.FC = () => {
     return (
@@ -816,7 +813,8 @@ import routerProvider from "@pankod/refine-react-router-v6";
 import dataProvider from "@pankod/refine-simple-rest";
 
 // visible-block-start
-import { Show, Button, HStack, Box } from "@pankod/refine-chakra-ui";
+import { Show } from "@pankod/refine-chakra-ui";
+import { Button, HStack, Box } from "@chakra-ui/react";
 
 const PostShow: React.FC = () => {
     return (
@@ -872,7 +870,8 @@ import routerProvider from "@pankod/refine-react-router-v6";
 import dataProvider from "@pankod/refine-simple-rest";
 
 // visible-block-start
-import { Show, Button } from "@pankod/refine-chakra-ui";
+import { Show } from "@pankod/refine-chakra-ui";
+import { Button } from "@chakra-ui/react";
 
 const PostShow: React.FC = () => {
     return (
@@ -931,7 +930,8 @@ import routerProvider from "@pankod/refine-react-router-v6";
 import dataProvider from "@pankod/refine-simple-rest";
 
 // visible-block-start
-import { Show, Button, HStack } from "@pankod/refine-chakra-ui";
+import { Show } from "@pankod/refine-chakra-ui";
+import { Button, HStack } from "@chakra-ui/react";
 
 const PostShow: React.FC = () => {
     return (
@@ -994,7 +994,8 @@ import routerProvider from "@pankod/refine-react-router-v6";
 import dataProvider from "@pankod/refine-simple-rest";
 
 // visible-block-start
-import { Show, Button } from "@pankod/refine-chakra-ui";
+import { Show } from "@pankod/refine-chakra-ui";
+import { Button } from "@chakra-ui/react";
 
 const PostShow: React.FC = () => {
     return (
